@@ -1,0 +1,8 @@
+torch==2.0.1
+torchvision
+torchaudio
+snntorch==0.7.0
+numpy
+pandas
+scikit-learn
+seaborn
