@@ -56,18 +56,17 @@ class FeatureSelection:
         selected_features = []
         if method == 'fisher':
             for i, superclass in enumerate(superclasses):
-                data = subsets[i]
-                labels = super_labels[i]
-                idx = fisher_score.fisher_score(data, labels, mode='rank')
+                data = np.asarray(subsets[i])
+                labels = np.asarray(super_labels[i])
+                # idx = fisher_score.fisher_score(data, labels, mode='rank')    # todo: da verificare
+                idx = fisher_score.fisher_score(data, labels, mode='index')
                 num_features = n_features
                 idx = idx[0:num_features]
                 selected_features.append(idx)
-                print(idx)
-                selected_features_train = data[:, idx]
-                if export_to_csv:
-                    # todo
-                    print('todo')
-                return selected_features
+            if export_to_csv:
+                # todo
+                print('todo')
+            return selected_features
         else:
             raise Exception(f'{method} not implemented... yet.')
 
@@ -77,8 +76,10 @@ Testing module with dummy data below
 '''
 
 data = np.asarray([
-    [1, 2, 4, 5, 'easp'],
-    [10, 20, 40, 50, 'prova'],
+    [10, 2, 4, 5, 'easp'],
+    [10, 2, 4, 5, 'easp'],
+    [1, 2, 100, 50000, 'prova'],
+    [10, 2, 3, 50000, 'prova'],
     [3, 4, 4, 5, 'fppp'],
     [9, 9, 4, 5, 'ciao']
 ])
@@ -95,7 +96,7 @@ output = [
 
 fs = FeatureSelection('data/features/dummy_features.csv', superclasses)
 
-#selected_features_idx = fs.find_features_subset(data, method='fisher', n_features=2, export_to_csv=True)
+selected_features_idx = fs.find_features_subset(data, method='fisher', n_features=3, export_to_csv=True)
 
 reduced_data, labels = fs.reduce_dimensionality(data)
 
