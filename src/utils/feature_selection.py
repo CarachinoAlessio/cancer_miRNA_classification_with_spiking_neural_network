@@ -16,6 +16,9 @@ class FeatureSelection:
         self.features = self.__load_features(feature_path=feature_path)
         self.superclasses = superclasses
         self.n_superclasses = len(self.superclasses)
+        self.save_path = os.path.join('data', 'features')
+        if not os.path.exists(self.save_path):
+            os.makedirs(self.save_path)
 
     def __load_features(self, feature_path: str) -> pd.DataFrame:
         '''
@@ -63,41 +66,50 @@ class FeatureSelection:
                 num_features = n_features
                 idx = idx[0:num_features]
                 selected_features.append(idx)
+
+            df_obj = {}
+
+            for idx, feature in enumerate(selected_features):
+                df_obj.setdefault(f'Super-class{idx}', feature)
+
             if export_to_csv:
                 # todo
+                df = pd.DataFrame(df_obj)
+                # f = open(os.path.join(self.save_path, 'selected_features.csv'))
+                df.to_csv(os.path.join(self.save_path, 'selected_features.csv'))
                 print('todo')
             return selected_features
         else:
             raise Exception(f'{method} not implemented... yet.')
 
 
-'''
-Testing module with dummy data below
-'''
+# '''
+# Testing module with dummy data below
+# '''
 
-data = np.asarray([
-    [10, 2, 4, 5, 'easp'],
-    [10, 2, 4, 5, 'easp'],
-    [1, 2, 100, 50000, 'prova'],
-    [10, 2, 3, 50000, 'prova'],
-    [3, 4, 4, 5, 'fppp'],
-    [9, 9, 4, 5, 'ciao']
-])
+# data = np.asarray([
+#     [10, 2, 4, 5, 'easp'],
+#     [10, 2, 4, 5, 'easp'],
+#     [1, 2, 100, 50000, 'prova'],
+#     [10, 2, 3, 50000, 'prova'],
+#     [3, 4, 4, 5, 'fppp'],
+#     [9, 9, 4, 5, 'ciao']
+# ])
 
-superclasses = [
-    ['easp', 'prova'],
-    ['fppp', 'ciao']
-]
+# superclasses = [
+#     ['easp', 'prova'],
+#     ['fppp', 'ciao']
+# ]
 
-output = [
-    [[1, 2, 4, 5, 'easp'], [10, 20, 40, 50, 'prova']],
-    [[3, 4, 4, 5, 'fppp'], [9, 9, 4, 5, 'ciao']]
-]
+# output = [
+#     [[1, 2, 4, 5, 'easp'], [10, 20, 40, 50, 'prova']],
+#     [[3, 4, 4, 5, 'fppp'], [9, 9, 4, 5, 'ciao']]
+# ]
 
-fs = FeatureSelection('data/features/dummy_features.csv', superclasses)
+# fs = FeatureSelection('data/features/dummy_features.csv', superclasses)
 
-selected_features_idx = fs.find_features_subset(data, method='fisher', n_features=3, export_to_csv=True)
+# selected_features_idx = fs.find_features_subset(data, method='fisher', n_features=3, export_to_csv=True)
 
-reduced_data, labels = fs.reduce_dimensionality(data)
+# reduced_data, labels = fs.reduce_dimensionality(data)
 
-print('stop')
+# print('stop')
