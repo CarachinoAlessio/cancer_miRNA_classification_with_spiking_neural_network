@@ -73,11 +73,9 @@ class FeatureSelection:
                 df_obj.setdefault(f'Super-class{idx}', feature)
 
             if export_to_csv:
-                # todo
                 df = pd.DataFrame(df_obj)
                 # f = open(os.path.join(self.save_path, 'selected_features.csv'))
                 df.to_csv(os.path.join(self.save_path, 'selected_features.csv'))
-                print('todo')
             return selected_features
         else:
             raise Exception(f'{method} not implemented... yet.')
