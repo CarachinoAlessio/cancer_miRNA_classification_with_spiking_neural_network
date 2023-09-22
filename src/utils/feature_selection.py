@@ -58,7 +58,7 @@ class FeatureSelection:
         subsets, super_labels = data_split_to_superclasses(data, self.superclasses)
         selected_features = []
         if method == 'fisher':
-            for i, superclass in enumerate(superclasses):
+            for i, superclass in enumerate(self.superclasses):
                 data = np.asarray(subsets[i])
                 labels = np.asarray(super_labels[i])
                 # idx = fisher_score.fisher_score(data, labels, mode='rank')    # todo: da verificare
