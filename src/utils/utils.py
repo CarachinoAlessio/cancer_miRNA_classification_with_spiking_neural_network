@@ -5,17 +5,20 @@ import csv
 def extract_label(file_name, verbose=False):
     data = {}
     label = []
+    tissues = []
     with open(file_name, "r") as fin:
         reader = csv.reader(fin, delimiter=',')
         first = True
         for row in reader:
             lbl = row[2]
+            tissue = row[13]
             if first or "TARGET" in lbl:
                 first = False
                 continue
             lbl = lbl.replace("TCGA-","")
 
             label.append(lbl)
+            tissues.append(tissue)
             if lbl in data.keys():
                 data[lbl] += 1
             else:
@@ -24,7 +27,7 @@ def extract_label(file_name, verbose=False):
         print(f"Number of classes in the dataset = {len(data)}")
         pprint.pprint(data, indent=4)
 
-    return label
+    return label, tissues
 
 def create_dictionary(labels):
     dictionary = {}
