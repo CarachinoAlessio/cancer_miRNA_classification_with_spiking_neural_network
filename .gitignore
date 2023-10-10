@@ -6,6 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
+
+# heavy files
+src/models/metadata_models/ovo_trained_1.pkl
+src/models/metadata_models/ovr_trained_1.pkl
+data/metadata/superclass_1_trainset.pkl
+
 # Distribution / packaging
 .Python
 build/
