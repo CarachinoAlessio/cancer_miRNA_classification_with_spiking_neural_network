@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 
 
@@ -12,28 +13,32 @@ class CNN(nn.Module):
                  ):
         super(CNN, self).__init__()
         # Primo strato convoluzionale
-        self.conv2d_1 = nn.Sequential(
-            nn.Conv2d(in_channels=300, out_channels=filters_number[0], kernel_size=convolution_windows[0]),
+        self.conv1d_1 = nn.Sequential(
+            nn.Conv1d(in_channels=1, out_channels=filters_number[0], kernel_size=convolution_windows[0]),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=max_pooling_windows[0]))
+            nn.MaxPool1d(kernel_size=max_pooling_windows[0]))
         # Secondo strato convoluzionale
-        self.conv2d_2 = nn.Sequential(
-            nn.Conv2d(in_channels=16, out_channels=filters_number[1], kernel_size=convolution_windows[1]),
+        self.conv1d_2 = nn.Sequential(
+            nn.Conv1d(in_channels=filters_number[0], out_channels=filters_number[1], kernel_size=convolution_windows[1]),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=max_pooling_windows[1]))
+            nn.MaxPool1d(kernel_size=max_pooling_windows[1]))
         # Terzo strato convoluzionale
-        self.conv2d_3 = nn.Sequential(
-            nn.Conv2d(in_channels=16, out_channels=filters_number[2], kernel_size=convolution_windows[2]),
+        self.conv1d_3 = nn.Sequential(
+            nn.Conv1d(in_channels=filters_number[1], out_channels=filters_number[2], kernel_size=convolution_windows[2]),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=max_pooling_windows[2]))
+            nn.MaxPool1d(kernel_size=max_pooling_windows[2]))
 
         # Strato completamente connesso
-        self.fc = nn.Linear(final_nf, num_classes)
+        self.fc = nn.Sequential(
+            nn.LazyLinear(final_nf),
+            nn.Linear(final_nf, num_classes)
+        )
 
     def forward(self, x):
-        out = self.conv2d_1(x)
-        out = self.conv2d_2(out)
-        out = self.conv2d_3(out)
+        x = torch.unsqueeze(x, 1)
+        out = self.conv1d_1(x)
+        out = self.conv1d_2(out)
+        out = self.conv1d_3(out)
         out = out.view(out.size(0), -1)  # Appiattisce l'output
         out = self.fc(out)
         return out
