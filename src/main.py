@@ -56,10 +56,21 @@ The tutorial consists of 4 steps:
 # Now we can define the search space as follow:
 
 search_space = {
-    'features': {'_type': 'choice', '_value': [128, 256, 512, 1024]},
-    'lr': {'_type': 'loguniform', '_value': [0.0001, 0.1]},
-    'momentum': {'_type': 'uniform', '_value': [0, 1]},
+    "nf1": {"_type": "randint", "_value": [2, 256]},
+    "nf2": {"_type": "randint", "_value": [2, 256]},
+    "nf3": {"_type": "randint", "_value": [2, 256]},
+    "nf4": {"_type": "randint", "_value": [2, 256]},
+    "cw1": {"_type": "randint", "_value": [4, 64]},
+    "cw2": {"_type": "randint", "_value": [4, 64]},
+    "cw3": {"_type": "randint", "_value": [4, 64]},
+    "pw1": {"_type": "randint", "_value": [4, 64]},
+    "pw2": {"_type": "randint", "_value": [4, 64]},
+    "pw3": {"_type": "randint", "_value": [4, 64]},
+
+    "batch_size": {"_type": "choice", "_value": [32, 64, 128]},
+    "lr": {"_type": "uniform", "_value": [0.0001, 0.1]}
 }
+
 
 # %%
 # Step 3: Configure the experiment
@@ -70,6 +81,7 @@ search_space = {
 # In this tutorial we use a *local* mode experiment,
 # which means models will be trained on local machine, without using any special training platform.
 from nni.experiment import Experiment
+import os
 experiment = Experiment('local')
 
 # %%
@@ -79,8 +91,10 @@ experiment = Experiment('local')
 # ^^^^^^^^^^^^^^^^^^^^
 # In NNI evaluation of each hyperparameter set is called a *trial*.
 # So the model script is called *trial code*.
-experiment.config.trial_command = 'python model.py'
+cnn_file_path = os.path.join("src", "models", "cnn_classifier.py")
+experiment.config.trial_command = f'python {cnn_file_path}'
 experiment.config.trial_code_directory = '.'
+
 # %%
 # When ``trial_code_directory`` is a relative path, it relates to current working directory.
 # To run ``main.py`` in a different path, you can set trial code directory to ``Path(__file__).parent``.
@@ -101,7 +115,7 @@ experiment.config.search_space = search_space
 # Configure tuning algorithm
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^
 # Here we use :doc:`TPE tuner </hpo/tuners>`.
-experiment.config.tuner.name = 'TPE'
+experiment.config.tuner.name = 'Anneal'
 experiment.config.tuner.class_args['optimize_mode'] = 'maximize'
 
 # %%
