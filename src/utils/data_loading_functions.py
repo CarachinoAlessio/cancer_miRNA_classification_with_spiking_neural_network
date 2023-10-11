@@ -41,6 +41,9 @@ def class_balancing(miRna_label,miRna_data,miRna_tissues):
         if miRna_label[i] == 'BRCA':
             index_BRCA.append(i)
 
+    #set seed to make it reproducible
+    np.random.seed(42)
+
     index_BRCA = np.random.choice(index_BRCA, 600, replace=False)
     miRna_data = np.delete(miRna_data, index_BRCA, axis=0)
     miRna_label = np.delete(miRna_label, index_BRCA, axis=0)

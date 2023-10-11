@@ -52,17 +52,4 @@ def divide_in_superclass(c_per_l,labels):
     for key in superclasses.keys():
         print(len(superclasses[key]))
         print(superclasses[key])
-    print("Adjusting classes...")
-    #These adjusting are made with further analysis on the confusion matrix!
-
-    #move THCA from superclass 3 to superclass 4
-    superclasses['4'].append('THCA')
-    superclasses['3'].remove('THCA')
-    #move UVM from superclass 0 to superclass 4
-    superclasses['4'].append('UVM')
-    superclasses['0'].remove('UVM')
-    print("New superclasses")
-    for key in superclasses.keys():
-        print(len(superclasses[key]))
-        print(superclasses[key])
     return superclasses

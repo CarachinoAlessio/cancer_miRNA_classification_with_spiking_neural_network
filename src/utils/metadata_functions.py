@@ -26,12 +26,12 @@ def meta_data_creation_train(ovo, ovr, kfold : KFold, X : np.array, y : np.array
     Returns:
     meta_data: metadata of the training set
     actual_classes: actual metalabel of the training set
-    actual_trainset: actual training set
+    indexes: indexes of the training set, are used to order the metalabels
     '''
     ovo_ = cp.deepcopy(ovo)
     ovr_ = cp.deepcopy(ovr)
     actual_classes = np.empty([0], dtype=int)
-    actual_trainset = np.empty([0, X.shape[1]], dtype=float)
+    indexes = np.empty([0], dtype=int)
     ovo_m = []
     ovr_m = []
     print("Starting k-fold cross validation...\n")
@@ -42,9 +42,8 @@ def meta_data_creation_train(ovo, ovr, kfold : KFold, X : np.array, y : np.array
         print("Fold {}".format(n+1))
         n = n+1
         train_X, train_y, test_X, test_y = X[train_ndx], y[train_ndx], X[test_ndx], y[test_ndx]
-
+        indexes = np.append(indexes, test_ndx)
         actual_classes = np.append(actual_classes, test_y)
-        actual_trainset = np.append(actual_trainset, test_X, axis=0)
         #train
         ovo_.fit(train_X, train_y)
         print("ovo done")
@@ -67,7 +66,35 @@ def meta_data_creation_train(ovo, ovr, kfold : KFold, X : np.array, y : np.array
         print("Metadata for {}° split created".format(n))
     meta_data = np.hstack([ovo_m, ovr_m])
     print("Metadata for the whole dataset created!")
-    return meta_data, actual_classes, actual_trainset
+    return meta_data, actual_classes, indexes
+
+def metadata_reordering(metadata, metalabels, indexes):
+    # The metalabel doesn't match the order of the training data, so we need to reorder it
+    # the index indicate which metalabel corresponds to which training data
+    # example if the index[0] = 5, it means that the first metalabel corresponds to the 5th training data
+    # so i want to reorder the metalabels so that the first metalabel corresponds to the first training data etc.
+
+    # We create a new array of metalabels
+    new_metalabels = np.zeros(len(metalabels))
+
+    # We iterate over the indexes
+
+    for i in range(len(indexes)):
+        # We take the index of the training data corresponding to the metalabel
+        index = indexes[i]
+        # We take the metalabel
+        metalabel = metalabels[i]
+        # We put the metalabel in the new array at the index corresponding to the training data
+        new_metalabels[index] = metalabel
+
+    # do the same for the metadata
+    new_metadata = np.zeros((len(metadata), len(metadata[0])))
+    for i in range(len(indexes)):
+        index = indexes[i]
+        metadata_ = metadata[i]
+        new_metadata[index] = metadata_
+    
+    return new_metadata, new_metalabels
 
 #Define a method to train the models on the whole training set without cross_validation
 
