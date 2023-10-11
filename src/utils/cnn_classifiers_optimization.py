@@ -1,3 +1,5 @@
+'''
+TODO: FILE DA ELIMINARE
 import os, platform
 import pandas as pd
 import numpy as np
@@ -90,6 +92,8 @@ def test(dataloader, model, loss_fn):
     test_loss /= num_batches
     correct /= size
     return correct
+
+
 experiment = Experiment('local')
 
 search_space = {
@@ -178,7 +182,7 @@ if __name__ == '__main__':
 
 
         model = CNN(num_classes, filter_numbers, convolution_windows, max_pooling_windows, final_nf).to(device)
-        epochs = 5
+        epochs = 2
         loss_fn = nn.CrossEntropyLoss()
         optimizer = torch.optim.SGD(model.parameters(), lr=params['lr'])
 
@@ -186,16 +190,18 @@ if __name__ == '__main__':
             print(f"Epoch {t + 1}\n-------------------------------")
             train(train_dataloader, model, loss_fn, optimizer)
             accuracy = test(test_dataloader, model, loss_fn)
+            print(accuracy)
             nni.report_intermediate_result(accuracy)
         nni.report_final_result(accuracy)
 
         experiment.run(8080)
         input('Enter a key to stop the experiment...')
-        '''match platform.system():
-            case 'Windows':
-                os.system('pause')
-            case '_':
-                signal.pause()
-        '''
+        # match platform.system():
+        #     case 'Windows':
+        #         os.system('pause')
+        #     case '_':
+        #         signal.pause()
+        #
 
         experiment.stop()
+'''

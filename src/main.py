@@ -1,4 +1,5 @@
 """
+TODO: FILE DA ELIMINARE
 HPO Quickstart with PyTorch
 ===========================
 This tutorial optimizes the model in `official PyTorch quickstart`_ with auto-tuning.
@@ -93,7 +94,7 @@ experiment = Experiment('local')
 # So the model script is called *trial code*.
 cnn_file_path = os.path.join("src", "models", "cnn_classifier.py")
 experiment.config.trial_command = f'python {cnn_file_path}'
-experiment.config.trial_code_directory = '.'
+experiment.config.trial_code_directory = './'
 
 # %%
 # When ``trial_code_directory`` is a relative path, it relates to current working directory.
