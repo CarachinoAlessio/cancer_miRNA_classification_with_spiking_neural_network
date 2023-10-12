@@ -98,16 +98,19 @@ class CancerDataset(Dataset):
             csv_file (string): Path to the csv file with annotations.
         """
         self.dataset = pd.read_csv(csv_file)
+        self.label_map = ['BRCA', 'KICH', 'KIRC', 'LUAD', 'LUSC', 'MESO', 'SARC', 'UCEC', 'BLCA', 'CESC', 'HNSC',
+                          'KIRP', 'PAAD', 'READ', 'STAD', 'DLBC', 'LGG', 'PRAD', 'TGCT', 'THYM', 'UCS', 'ACC', 'CHOL',
+                          'LIHC', 'ESCA', 'PCPG', 'SKCM', 'THCA', 'UVM']
 
     def __len__(self):
         return len(self.dataset)
 
     def __getitem__(self, idx):
 
-        data = self.dataset.iloc[idx, :-1]
+        data = self.dataset.iloc[idx, 1:-1].to_numpy(dtype=float)
         label = self.dataset.iloc[idx, -1]
 
         data = torch.from_numpy(data).to(torch.float32)
-        label = torch.tensor(label).to()
+        label = torch.tensor(self.label_map.index(label)).to(torch.int)
     
         return (data, label)

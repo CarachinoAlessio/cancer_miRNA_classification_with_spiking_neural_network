@@ -63,7 +63,7 @@ class FeatureSelection:
             raise Exception(f'{method} not implemented... yet.')
 
 
-    def reduce_dimensionality(self, data: list[list], inference_mode: bool = False) -> tuple[list[Any], list[Any]]:
+    def reduce_dimensionality(self, data: list[list], inference_mode: bool = False, data_category: str = 'train') -> tuple[list[Any], list[Any]]:
         '''
         :param data: list containing samples (data + label)
         :param inference_mode: not used... yet
@@ -82,11 +82,12 @@ class FeatureSelection:
             subset = subset[indici_features]
             subset = subset.T
             reduced_data.append(subset)
+            if not inference_mode:
+                dataset = np.hstack((subset, np.asarray(labels[i]).reshape((len(labels[i]), 1))))
 
-            dataset = np.hstack((subset, labels[i]))
-
-            filename = f'features_metalabel{i}.csv'
-            file = open(os.path.join(self.save_path, filename))
-            dataset.dump(file=file)
+                filename = f'features_metalabel{i}_{data_category}.csv'
+                file = os.path.join(self.save_path, filename)
+                dataset = pd.DataFrame(dataset)
+                dataset.to_csv(file)
 
         return reduced_data, labels
