@@ -5,6 +5,7 @@ import copy as cp
 import pickle as pkl
 from sklearn.model_selection import KFold
 
+
 def extract_label(file_name, verbose=False):
     data = {}
     label = []
