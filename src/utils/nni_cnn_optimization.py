@@ -7,7 +7,7 @@ from src.utils.data_loading_functions import *
 from src.utils.metadata_functions import *
 from src.utils.statistics import *
 from src.utils.superclasses_functions import *
-from utils.feature_selection import FeatureSelection
+from src.utils.feature_selection import FeatureSelection
 
 # Load data
 label_path = os.path.join("data", "MLinApp_course_data", "tcga_mir_label.csv")
@@ -30,9 +30,9 @@ superclasses = [
     ['ESCA', 'PCPG', 'SKCM', 'THCA', 'UVM']
 ]
 
-data = np.vstack(train_data, train_label)
+data = np.hstack((train_data, train_label.reshape((len(train_label), 1))))
 
-fs = FeatureSelection('data/features/save_features.csv', superclasses)
+fs = FeatureSelection('TEST_selected_features.csv', superclasses)
 
 selected_features_idx = fs.find_features_subset(data, method='fisher', n_features=300, export_to_csv=True)
 
