@@ -3,12 +3,16 @@
 ##These function are used for the classic ML part, for the CNN use the pytorch Dataloader
 
 import matplotlib.pyplot as plt
+import os
 import numpy as np
+import pandas as pd
 from src.utils.utils import *
 from sklearn import datasets, svm
 from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split
 import scipy
+import torch
+from torch.utils.data.dataset import Dataset
 
 def load_data(data_path:str, label_path:str):
         miRna_label, miRna_tissues = extract_label(label_path)
@@ -85,3 +89,22 @@ def split_data(miRna_data,miRna_label):
     print("\n")
     print("Dimensions of a single sample: {}".format(train_data[0].shape))
     return train_data, val_data, train_label, val_label
+
+
+class CancerDataset(Dataset):
+    def __init__(self, csv_file: str):
+        """
+        Arguments:
+            csv_file (string): Path to the csv file with annotations.
+        """
+        self.dataset = pd.read_csv(csv_file)
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, idx):
+
+        data = self.dataset.iloc[idx, :-1]
+        label = self.dataset.iloc[idx, -1]
+
+        return (data, label)

@@ -80,6 +80,13 @@ class FeatureSelection:
             subset = np.asarray(subset).T
 
             subset = subset[indici_features]
-            reduced_data.append(subset.T)
+            subset = subset.T
+            reduced_data.append(subset)
+
+            dataset = np.hstack((subset, labels[i]))
+
+            filename = f'features_metalabel{i}.csv'
+            file = open(os.path.join(self.save_path, filename))
+            dataset.dump(file=file)
 
         return reduced_data, labels
