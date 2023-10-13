@@ -12,7 +12,7 @@ import os
 DEVICE = ("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def load_dataset(name='', batch_size=128, shuffle_train=True, shuffle_test=False, val=False, metalabel=0):
+def load_dataset(name='', batch_size=128, shuffle_train=True, shuffle_test=False, val=False, metalabel=0, labels_of_metaclass=[]):
     """
         :param name: name of the dataset
         :param batch_size: batch size (default 128)
@@ -65,8 +65,8 @@ def load_dataset(name='', batch_size=128, shuffle_train=True, shuffle_test=False
             transforms.ToTensor()
         ])
 
-        training_set = CancerDataset(os.path.join('data', 'features', f'features_metalabel{metalabel}_train.csv'))
-        test_set = CancerDataset(os.path.join('data', 'features', f'features_metalabel{metalabel}_val.csv'))
+        training_set = CancerDataset(os.path.join('data', 'features', f'reduced_data_metalabel{metalabel}_train.csv'), labels_of_metaclass)
+        test_set = CancerDataset(os.path.join('data', 'features', f'reduced_data_metalabel{metalabel}_val.csv'), labels_of_metaclass)
 
         train_dataloader = torch.utils.data.DataLoader(
             training_set,

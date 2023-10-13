@@ -1,26 +1,7 @@
-import matplotlib.pyplot as plt
-import numpy as np
-import os
+import argparse
+import nni
 
-from src.utils.utils import *
-from src.utils.data_loading_functions import *
-from src.utils.metadata_functions import *
-from src.utils.statistics import *
-from src.utils.superclasses_functions import *
-from src.utils.feature_selection import FeatureSelection
-
-# Load data
-label_path = os.path.join("data", "MLinApp_course_data", "tcga_mir_label.csv")
-data_path = os.path.join("data", "MLinApp_course_data", "tcga_mir_rpm.csv")
-miRNA_data, miRNA_labels, miRNA_tissues = load_data(data_path, label_path)
-
-# Adjust data
-miRNA_data, miRNA_labels, miRNA_tissues, labels, dictionary, lab = class_balancing(miRNA_data, miRNA_labels, miRNA_tissues)
-# Z-Score normalization
-miRNA_data = normalize_data(miRNA_data)
-# Splitting the data
-train_data, val_data, train_label, val_label = split_data(miRNA_data, miRNA_labels)
-print('hello')
+from src.models.cnn_classifier import main_cnn_optimization
 
 superclasses = [
     ['BRCA', 'KICH', 'KIRC', 'LUAD', 'LUSC', 'MESO', 'SARC', 'UCEC'],
@@ -30,12 +11,41 @@ superclasses = [
     ['ESCA', 'PCPG', 'SKCM', 'THCA', 'UVM']
 ]
 
-data = np.hstack((train_data, train_label.reshape((len(train_label), 1))))
+if __name__ == '__main__':
+    def get_params():
+        ''' Get parameters from command line '''
+        parser = argparse.ArgumentParser()
+        parser.add_argument("--nf1", type=int, default=100)
+        parser.add_argument("--nf2", type=int, default=50)
+        parser.add_argument("--nf3", type=int, default=40)
+        parser.add_argument("--nf4", type=int, default=30)
+        parser.add_argument("--cw1", type=int, default=4)
+        parser.add_argument("--cw2", type=int, default=4)
+        parser.add_argument("--cw3", type=int, default=4)
+        parser.add_argument("--pw1", type=int, default=4)
+        parser.add_argument("--pw2", type=int, default=4)
+        parser.add_argument("--pw3", type=int, default=4)
+        parser.add_argument("--batch_size", type=int, default=32)
+        parser.add_argument("--lr", type=float, default=1e-3)
 
-fs = FeatureSelection('TEST_selected_features.csv', superclasses)
+        parser.add_argument("--superclass", type=int,
+                            help='Please specify the superclass you want to run the experiment '
+                                 'for.')
+        args, _ = parser.parse_known_args()
+        return args
 
-selected_features_idx = fs.find_features_subset(data, method='fisher', n_features=300, export_to_csv=True)
+    for i in range(len(superclasses)):
+        print(f'RUNNING EXPERIMENT FOR SUPERCLASS {i}')
 
-reduced_data, labels = fs.reduce_dimensionality(data)
+        try:
+            # get parameters form tuner
+            tuner_params = nni.get_next_parameter()
+            # logger.debug(tuner_params)
+            params = vars(get_params())
+            params.update(tuner_params)
+            main_cnn_optimization(params, i, superclasses[i])
+        except Exception as exception:
+            # logger.exception(exception)
+            raise
 
-print('stop')
+

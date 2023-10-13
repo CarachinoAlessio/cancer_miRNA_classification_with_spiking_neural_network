@@ -1,6 +1,8 @@
 from typing import Any
 
 from skfeature.function.similarity_based import fisher_score
+
+from src.utils.data_loading_functions import load_data, split_data, normalize_data, class_balancing
 from utils import data_split_to_superclasses
 import numpy as np
 import pandas as pd
@@ -15,7 +17,7 @@ class FeatureSelection:
     ) -> None:
         # self.features = self.__load_features(feature_path=feature_path)
         self.feature_file_name = feature_file_path
-        self.features = None,    # this field is None until find_features_subset creates the feature file
+        self.features = None,  # this field is None until find_features_subset creates the feature file
         self.superclasses = superclasses
         self.n_superclasses = len(self.superclasses)
         self.save_path = os.path.join('data', 'features')
@@ -62,15 +64,15 @@ class FeatureSelection:
         else:
             raise Exception(f'{method} not implemented... yet.')
 
-
-    def reduce_dimensionality(self, data: list[list], inference_mode: bool = False, data_category: str = 'train') -> tuple[list[Any], list[Any]]:
+    def reduce_dimensionality(self, data: np.ndarray[Any, np.dtype], inference_mode: bool = False,
+                              data_category: str = 'train') -> tuple[list[Any], list[Any]]:
         '''
+        :param data_category: 'train' | 'val'
         :param data: list containing samples (data + label)
         :param inference_mode: not used... yet
         :return: reduced data according to their superclass feature subset selection
         '''
         reduced_data = []
-        labels = []
         data = np.asarray(data)
         subsets, labels = data_split_to_superclasses(data, self.superclasses)
 
@@ -85,9 +87,41 @@ class FeatureSelection:
             if not inference_mode:
                 dataset = np.hstack((subset, np.asarray(labels[i]).reshape((len(labels[i]), 1))))
 
-                filename = f'features_metalabel{i}_{data_category}.csv'
+                filename = f'reduced_data_metalabel{i}_{data_category}.csv'
                 file = os.path.join(self.save_path, filename)
                 dataset = pd.DataFrame(dataset)
                 dataset.to_csv(file)
 
         return reduced_data, labels
+
+
+# Load data
+label_path = os.path.join("data", "MLinApp_course_data", "tcga_mir_label.csv")
+data_path = os.path.join("data", "MLinApp_course_data", "tcga_mir_rpm.csv")
+miRNA_data, miRNA_labels, miRNA_tissues = load_data(data_path, label_path)
+
+# Adjust data
+miRNA_data, miRNA_labels, miRNA_tissues, labels, dictionary, lab = class_balancing(miRNA_data, miRNA_labels,
+                                                                                   miRNA_tissues)
+# Z-Score normalization
+miRNA_data = normalize_data(miRNA_data)
+# Splitting the data
+train_data, val_data, train_label, val_label = split_data(miRNA_data, miRNA_labels)
+
+superclasses = [
+    ['BRCA', 'KICH', 'KIRC', 'LUAD', 'LUSC', 'MESO', 'SARC', 'UCEC'],
+    ['BLCA', 'CESC', 'HNSC', 'KIRP', 'PAAD', 'READ', 'STAD'],
+    ['DLBC', 'LGG', 'PRAD', 'TGCT', 'THYM', 'UCS'],
+    ['ACC', 'CHOL', 'LIHC'],
+    ['ESCA', 'PCPG', 'SKCM', 'THCA', 'UVM']
+]
+
+train_data = np.hstack((train_data, train_label.reshape((len(train_label), 1))))
+val_data = np.hstack((val_data, val_label.reshape((len(val_label), 1))))
+
+fs = FeatureSelection('filter_features.csv', superclasses)
+
+selected_features_idx = fs.find_features_subset(train_data, method='fisher', n_features=300, export_to_csv=True)
+
+reduced_train_data, train_labels = fs.reduce_dimensionality(train_data, data_category='train')
+reduced_val_data, val_labels = fs.reduce_dimensionality(val_data, data_category='val')

@@ -1,64 +1,18 @@
 import torch
 import torch.nn as nn
 import nni
-import torchvision
-import os
-import torchvision.transforms as transforms
-from torchvision.datasets import MNIST
 import argparse
 
+from src.utils.dataloader import load_dataset
+
 device = 'cpu'
-
-
-def load_dataset(name='', batch_size=128, shuffle_train=True, shuffle_test=False, val=False):
-    """
-        :param name: name of the dataset
-        :param batch_size: batch size (default 128)
-
-        Available datasets:
-        - "MNIST"
-        - "GTSRB"
-        - "SVHN"
-    """
-    root_datasets = os.path.dirname(torchvision.datasets.__file__)
-
-    if name == 'MNIST':
-        transform_test = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize((0.1307,), (0.3081,)),
-            transforms.Lambda(torch.flatten)
-        ])
-
-        # root_training = os.path.join(datasets_folder, '/MNIST/raw/train-images-idx3-ubyte')
-        training_set = MNIST(
-            root=root_datasets,
-            train=True,
-            download=True,
-            transform=transform_test
-        )
-
-        test_set = MNIST(
-            root=root_datasets,
-            train=False,
-            download=True,
-            transform=transform_test
-        )
-
-        train_dataset = torch.utils.data.DataLoader(
-            training_set,
-            batch_size=batch_size,
-            shuffle=True,
-            num_workers=2
-        )
-
-        test_dataset = torch.utils.data.DataLoader(
-            training_set,
-            batch_size=batch_size,
-            shuffle=False,
-            num_workers=2
-        )
-
-        return train_dataset, test_dataset
+# superclasses = [
+#     ['BRCA', 'KICH', 'KIRC', 'LUAD', 'LUSC', 'MESO', 'SARC', 'UCEC'],
+#     ['BLCA', 'CESC', 'HNSC', 'KIRP', 'PAAD', 'READ', 'STAD'],
+#     ['DLBC', 'LGG', 'PRAD', 'TGCT', 'THYM', 'UCS'],
+#     ['ACC', 'CHOL', 'LIHC'],
+#     ['ESCA', 'PCPG', 'SKCM', 'THCA', 'UVM']
+# ]
 
 
 def train(dataloader, model, loss_fn, optimizer):
@@ -89,10 +43,12 @@ def test(dataloader, model, loss_fn):
     return correct
 
 
-def main(params):
-    train_dataloader, test_dataloader = load_dataset(name='MNIST', batch_size=params['batch_size'])
+def main_cnn_optimization(params, metalabel, labels_of_metaclass):
+    num_classes = len(labels_of_metaclass)
 
-    num_classes = 10    # TODO: CHANGE IT ACCORDING TO THE METACLASS
+    print(f'METACLASS LABELS: {labels_of_metaclass}')
+    train_dataloader, test_dataloader = load_dataset(name='cancer', batch_size=params['batch_size'],
+                                                     metalabel=metalabel, labels_of_metaclass=labels_of_metaclass)
 
     # Definire la classe per la CNN
     class CNN(nn.Module):
@@ -132,6 +88,7 @@ def main(params):
             out = self.conv1d_3(out)
             out = out.view(out.size(0), -1)  # Appiattisce l'output
             out = self.fc(out)
+            # return torch.argmax(out, dim=1)
             return out
 
     model = CNN(num_classes).to(device)
@@ -163,20 +120,37 @@ def get_params():
     parser.add_argument("--pw2", type=int, default=4)
     parser.add_argument("--pw3", type=int, default=4)
     parser.add_argument("--batch_size", type=int, default=32)
-    parser.add_argument("--lr", type=int, default=1e-4)
+    parser.add_argument("--lr", type=float, default=1e-2)
 
+    parser.add_argument("--superclass", type=int, help='Please specify the superclass you want to run the experiment '
+                                                       'for.')
     args, _ = parser.parse_known_args()
     return args
 
 
-if __name__ == '__main__':
-    try:
-        # get parameters form tuner
-        tuner_params = nni.get_next_parameter()
-        # logger.debug(tuner_params)
-        params = vars(get_params())
-        params.update(tuner_params)
-        main(params)
-    except Exception as exception:
-        # logger.exception(exception)
-        raise
+# if __name__ == '__main__':
+#     for i in range(len(superclasses)):
+#         print(f'RUNNING EXPERIMENT FOR SUPERCLASS {i}')
+#
+#         try:
+#             # get parameters form tuner
+#             tuner_params = nni.get_next_parameter()
+#             # logger.debug(tuner_params)
+#             params = vars(get_params())
+#             params.update(tuner_params)
+#             main_cnn_optimization(params, i, superclasses[i])
+#         except Exception as exception:
+#             # logger.exception(exception)
+#             raise
+#     '''
+#     try:
+#         # get parameters form tuner
+#         tuner_params = nni.get_next_parameter()
+#         # logger.debug(tuner_params)
+#         params = vars(get_params())
+#         params.update(tuner_params)
+#         main(params)
+#     except Exception as exception:
+#         # logger.exception(exception)
+#         raise
+#     '''

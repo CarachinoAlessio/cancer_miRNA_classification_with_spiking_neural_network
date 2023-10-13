@@ -1,11 +1,11 @@
-experimentName: example_mnist
+experimentName: cancer_mirna_case
 trialConcurrency: 2
 maxExperimentDuration: 1h
-maxTrialNumber: 100
+maxTrialNumber: 10
 searchSpaceFile: search_space.json
 useAnnotation: false
-trialCommand: python cnn_classifier.py
-trialCodeDirectory: .
+trialCommand: python ./src/models/cnn_classifier.py
+trialCodeDirectory: ./../../.
 trialGpuNumber: 0
 tuner:
   name: Anneal
