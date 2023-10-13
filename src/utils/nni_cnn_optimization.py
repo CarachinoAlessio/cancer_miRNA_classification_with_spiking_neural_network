@@ -1,7 +1,9 @@
+'''
+TODO: FILE DA ELIMINARE
 import argparse
 import nni
 
-from src.models.cnn_classifier import main_cnn_optimization
+from cnn_classifier import main_cnn_optimization
 
 superclasses = [
     ['BRCA', 'KICH', 'KIRC', 'LUAD', 'LUSC', 'MESO', 'SARC', 'UCEC'],
@@ -13,7 +15,6 @@ superclasses = [
 
 if __name__ == '__main__':
     def get_params():
-        ''' Get parameters from command line '''
         parser = argparse.ArgumentParser()
         parser.add_argument("--nf1", type=int, default=100)
         parser.add_argument("--nf2", type=int, default=50)
@@ -47,5 +48,5 @@ if __name__ == '__main__':
         except Exception as exception:
             # logger.exception(exception)
             raise
-
+'''
 
