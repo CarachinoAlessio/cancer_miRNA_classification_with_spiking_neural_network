@@ -65,7 +65,8 @@ def main_scnn_optimization(params, metalabel, labels_of_metaclass):
     beta = params['beta']
     num_step = params['num_step']
 
-    model = SCNN(num_classes, filter_numbers, convolution_windows, max_pooling_windows, final_nf, beta).to(device)
+    model = SCNN(num_classes, filter_numbers, convolution_windows, max_pooling_windows, final_nf, beta)#.to(device)
+    model.to(device)
     epochs = 5  # TODO: be careful
     loss_fn = SF.ce_rate_loss()
     optimizer = torch.optim.SGD(model.parameters(), lr=params['lr'])
