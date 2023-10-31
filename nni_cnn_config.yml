@@ -6,10 +6,11 @@ searchSpaceFile: cnn_search_space.json
 useAnnotation: false
 trialCommand: python nni_cnn_optimizer.py
 trialCodeDirectory: .
-trialGpuNumber: 0
+trialGpuNumber: 1
 tuner:
   name: Anneal
   classArgs:
     optimize_mode: maximize
 trainingService:
   platform: local
+  use_active_gpu: true
