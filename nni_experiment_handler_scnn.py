@@ -30,6 +30,8 @@ experiment.config.trial_command = 'python nni_scnn_optimizer.py'
 experiment.config.trial_code_directory = Path(__file__).parent
 experiment.config.tuner.name = 'Anneal'
 experiment.config.tuner.class_args['optimize_mode'] = 'maximize'
+experiment.config.trial_gpu_number = 1
+experiment.config.training_service.use_active_gpu = True
 # experiment.config.training_service.use_active_gpu = True
 
 experiment.run(8080)
