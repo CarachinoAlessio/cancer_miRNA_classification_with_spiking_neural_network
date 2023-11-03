@@ -2,10 +2,10 @@ torch==2.0.1
 torchvision
 torchaudio
 snntorch==0.7.0
-numpy~=1.26.0
-pandas~=2.1.0
+numpy
+pandas
 scikit-learn
 seaborn
 skfeature-chappers==1.1.0
 
-nni~=3.0
+nni==2.5

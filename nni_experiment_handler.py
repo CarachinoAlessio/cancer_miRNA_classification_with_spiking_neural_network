@@ -1,5 +1,5 @@
 from pathlib import Path
-
+import os
 from nni.experiment import Experiment
 
 search_space = {
@@ -21,8 +21,9 @@ search_space = {
 experiment = Experiment('local')
 experiment.config.experiment_name = 'cancer mirna case'
 experiment.config.trial_concurrency = 2
-experiment.config.max_trial_number = 10
+experiment.config.max_trial_number = 2
 experiment.config.search_space = search_space
+experiment.config.experiment_working_directory = os.path.join('results')
 experiment.config.trial_command = 'python nni_cnn_optimizer.py'
 experiment.config.trial_code_directory = Path(__file__).parent
 experiment.config.tuner.name = 'Anneal'
@@ -30,5 +31,6 @@ experiment.config.tuner.class_args['optimize_mode'] = 'maximize'
 # experiment.config.training_service.use_active_gpu = True
 
 experiment.run(8080)
+experiment.export_data()
 #print(experiment.)
 experiment.stop()

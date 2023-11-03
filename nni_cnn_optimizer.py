@@ -58,7 +58,7 @@ def main_cnn_optimization(params, metalabel, labels_of_metaclass):
     final_nf = params['nf4']
 
     model = CNN(num_classes, filter_numbers, convolution_windows, max_pooling_windows, final_nf).to(device)
-    epochs = 5  # TODO: be careful
+    epochs = 35  # TODO: be careful
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=params['lr'])
 
