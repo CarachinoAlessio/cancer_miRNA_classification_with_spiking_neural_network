@@ -1,9 +1,14 @@
 import torch
 import torch.nn as nn
+import snntorch as snn
+from snntorch import backprop
+from snntorch import functional as SF
+from snntorch import utils
+from snntorch import spikeplot as splt
 import nni
 import argparse
-
-from src.models.CNN import CNN
+#SCNN lib
+from src.models.SCNN import SCNN
 from src.utils.dataloader import load_dataset
 
 device = ("cuda" if torch.cuda.is_available() else "cpu")
@@ -17,35 +22,36 @@ superclasses = [
 ]
 
 
-def train(dataloader, model, loss_fn, optimizer):
+def train(dataloader, model, loss_fn, optimizer, num_steps):
     size = len(dataloader.dataset)
     model.train()
     for batch, (X, y) in enumerate(dataloader):
         X, y = X.to(device), y.to(device)
-        pred = model(X)
-        loss = loss_fn(pred, y)
+        spk_rec, _ = model(num_steps, X)
+        loss_val = loss_fn(spk_rec, y)
         optimizer.zero_grad()
-        loss.backward()
+        loss_val.backward()
         optimizer.step()
 
 
-def test(dataloader, model, loss_fn):
+def test(dataloader, model, loss_fn, num_steps):
     size = len(dataloader.dataset)
     num_batches = len(dataloader)
     model.eval()
+    total = 0
     test_loss, correct = 0, 0
     with torch.no_grad():
         for X, y in dataloader:
             X, y = X.to(device), y.to(device)
-            pred = model(X)
-            test_loss += loss_fn(pred, y).item()
-            correct += (pred.argmax(1) == y).type(torch.float).sum().item()
-    test_loss /= num_batches
-    correct /= size
+            spk_rec, _ = model(num_steps, X)
+            correct += SF.accuracy_rate(spk_rec, y) * spk_rec.size(1)
+            total += spk_rec.size(1)
+    correct /= total
     return correct
 
 
-def main_cnn_optimization(params, metalabel, labels_of_metaclass):
+
+def main_scnn_optimization(params, metalabel, labels_of_metaclass):
     num_classes = len(labels_of_metaclass)
 
     print(f'METACLASS LABELS: {labels_of_metaclass}')
@@ -56,17 +62,19 @@ def main_cnn_optimization(params, metalabel, labels_of_metaclass):
     convolution_windows = [params['cw1'], params['cw2'], params['cw3']]
     max_pooling_windows = [params['pw1'], params['pw2'], params['pw3']]
     final_nf = params['nf4']
+    beta = params['beta']
+    num_step = params['num_step']
 
-    model = CNN(num_classes, filter_numbers, convolution_windows, max_pooling_windows, final_nf)#.to(device)
+    model = SCNN(num_classes, filter_numbers, convolution_windows, max_pooling_windows, final_nf, beta)#.to(device)
     model.to(device)
     epochs = 5  # TODO: be careful
-    loss_fn = nn.CrossEntropyLoss()
+    loss_fn = SF.ce_rate_loss()
     optimizer = torch.optim.SGD(model.parameters(), lr=params['lr'])
 
     for t in range(epochs):
         print(f"Epoch {t + 1}\n-------------------------------")
-        train(train_dataloader, model, loss_fn, optimizer)
-        accuracy = test(test_dataloader, model, loss_fn)
+        train(train_dataloader, model, loss_fn, optimizer, num_steps=num_step)
+        accuracy = test(test_dataloader, model, loss_fn, num_steps=num_step)
         print(accuracy)
         nni.report_intermediate_result(accuracy)
     nni.report_final_result(accuracy)
@@ -86,6 +94,8 @@ def get_params():
     parser.add_argument("--pw1", type=int, default=4)
     parser.add_argument("--pw2", type=int, default=4)
     parser.add_argument("--pw3", type=int, default=4)
+    parser.add_argument("--beta", type=float, default=0.8)
+    parser.add_argument("--num_step", type=int, default=50)
     parser.add_argument("--batch_size", type=int, default=32)
     parser.add_argument("--lr", type=float, default=1e-2)
 
@@ -106,7 +116,7 @@ if __name__ == '__main__':
         # logger.debug(tuner_params)
         params = vars(get_params())
         params.update(tuner_params)
-        main_cnn_optimization(params, superclass_target, metaclass_labels)
+        main_scnn_optimization(params, superclass_target, metaclass_labels)
     except Exception as exception:
         # logger.exception(exception)
         raise

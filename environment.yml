@@ -1,0 +1,17 @@
+name: mlinapp
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10.4
+  - pip:
+      - matplotlib==3.8.0
+      - numpy==1.26.0
+      - pandas==2.1.0
+      - scikit-learn==1.3.0
+      - scipy==1.11.2
+      - seaborn==0.12.2
+      - snntorch==0.7.0
+      - torch==2.0.1
+      - torchaudio==2.0.2
+      - torchvision==0.15.2
