@@ -60,9 +60,10 @@ def main_cnn_optimization(params, metalabel, labels_of_metaclass):
 
     model = CNN(num_classes, filter_numbers, convolution_windows, max_pooling_windows, final_nf, dropout)#.to(device)
     model.to(device)
-    epochs = 5  # TODO: be careful
+    epochs = 100  # TODO: be careful
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=params['lr'])
+    # optimizer = torch.optim.SGD(model.parameters(), lr=params['lr'])
+    optimizer = torch.optim.Adam(model.parameters(), lr=params['lr'])
 
     for t in range(epochs):
         print(f"Epoch {t + 1}\n-------------------------------")
