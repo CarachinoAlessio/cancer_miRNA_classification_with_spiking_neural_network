@@ -3,12 +3,21 @@ import torch.nn as nn
 
 
 class CNN(nn.Module):
-    def __init__(self, num_classes, filter_numbers, convolution_windows, max_pooling_windows, final_nf):
+    def __init__(
+            self,
+            num_classes,
+            filter_numbers, 
+            convolution_windows, 
+            max_pooling_windows, 
+            final_nf,
+            dropout
+        ):
         super(CNN, self).__init__()
         self.filter_numbers = filter_numbers
         self.convolution_windows = convolution_windows
         self.max_pooling_windows = max_pooling_windows
         self.final_nf = final_nf
+        self.dropout = dropout
         # First Convolutional Layer
         self.conv1d_1 = nn.Sequential(
             nn.Conv1d(in_channels=1, out_channels=self.filter_numbers[0], kernel_size=self.convolution_windows[0]),
@@ -20,15 +29,19 @@ class CNN(nn.Module):
                       kernel_size=self.convolution_windows[1]),
             nn.ReLU(),
             nn.MaxPool1d(kernel_size=self.max_pooling_windows[1]))
+        
         # Third Convolutional Layer
         self.conv1d_3 = nn.Sequential(
             nn.Conv1d(in_channels=self.filter_numbers[1], out_channels=self.filter_numbers[2],
                       kernel_size=self.convolution_windows[2]),
             nn.ReLU(),
             nn.MaxPool1d(kernel_size=self.max_pooling_windows[2]))
+        
         # Fully connected layer
         self.fc = nn.Sequential(
+            nn.Dropout(self.dropout[0]),
             nn.LazyLinear(self.final_nf),
+            nn.Dropout(self.dropout[1]),
             nn.Linear(self.final_nf, num_classes)
         )
 

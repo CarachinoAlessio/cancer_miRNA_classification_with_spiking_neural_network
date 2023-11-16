@@ -55,9 +55,10 @@ def main_cnn_optimization(params, metalabel, labels_of_metaclass):
     filter_numbers = [params['nf1'], params['nf2'], params['nf3']]
     convolution_windows = [params['cw1'], params['cw2'], params['cw3']]
     max_pooling_windows = [params['pw1'], params['pw2'], params['pw3']]
+    dropout = [params['dropout_0'], params['dropout_1']]
     final_nf = params['nf4']
 
-    model = CNN(num_classes, filter_numbers, convolution_windows, max_pooling_windows, final_nf)#.to(device)
+    model = CNN(num_classes, filter_numbers, convolution_windows, max_pooling_windows, final_nf, dropout)#.to(device)
     model.to(device)
     epochs = 5  # TODO: be careful
     loss_fn = nn.CrossEntropyLoss()
@@ -86,6 +87,8 @@ def get_params():
     parser.add_argument("--pw1", type=int, default=4)
     parser.add_argument("--pw2", type=int, default=4)
     parser.add_argument("--pw3", type=int, default=4)
+    parser.add_argument("--dropout_0", type=float, default=.5)
+    parser.add_argument("--dropout_1", type=float, default=.5)
     parser.add_argument("--batch_size", type=int, default=32)
     parser.add_argument("--lr", type=float, default=1e-2)
 

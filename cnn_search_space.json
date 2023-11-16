@@ -1,15 +1,16 @@
 {
-    "nf1": {"_type": "randint", "_value": [2, 256]},
-    "nf2": {"_type": "randint", "_value": [2, 256]},
-    "nf3": {"_type": "randint", "_value": [2, 256]},
-    "nf4": {"_type": "randint", "_value": [2, 256]},
+    "nf1": {"_type": "randint", "_value": [4, 100]},
+    "nf2": {"_type": "randint", "_value": [4, 100]},
+    "nf3": {"_type": "randint", "_value": [4, 100]},
+    "nf4": {"_type": "randint", "_value": [4, 100]},
     "cw1": {"_type": "randint", "_value": [2, 7]},
     "cw2": {"_type": "randint", "_value": [2, 7]},
     "cw3": {"_type": "randint", "_value": [2, 7]},
     "pw1": {"_type": "randint", "_value": [2, 7]},
     "pw2": {"_type": "randint", "_value": [2, 7]},
     "pw3": {"_type": "randint", "_value": [2, 7]},
-
+    "dropout_0": {"_type": "uniform", "_value": [0.5, 0.8]},
+    "dropout_1": {"_type": "uniform", "_value": [0.5, 0.8]}, 
     "batch_size": {"_type": "choice", "_value": [32, 64, 128]},
-    "lr": {"_type": "uniform", "_value": [0.0001, 0.1]}
+    "lr": {"_type": "quniform", "_value": [0.00001, 0.0025, 0.00001]}
 }
