@@ -3,12 +3,13 @@
 ##These function are used for the classic ML part, for the CNN use the pytorch Dataloader
 
 import pandas as pd
-from src.utils.utils import *
+from src.utils.utils import extract_label, label_processing
 from sklearn.model_selection import train_test_split
 import scipy
 import torch
 from torch.utils.data.dataset import Dataset
-
+import numpy as np
+from typing import List
 
 def load_data(data_path: str, label_path: str):
     miRna_label, miRna_tissues = extract_label(label_path)
@@ -92,7 +93,7 @@ def split_data(miRna_data, miRna_label):
 
 
 class CancerDataset(Dataset):
-    def __init__(self, csv_file: str, labels_of_metaclass: list[str]):
+    def __init__(self, csv_file: str, labels_of_metaclass: List[str]):
         """
         Arguments:
             csv_file (string): Path to the csv file with annotations.
