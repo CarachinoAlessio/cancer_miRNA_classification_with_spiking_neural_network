@@ -7,7 +7,8 @@ from src.models.CNN import CNN
 from src.utils.dataloader import load_dataset
 
 device = ("cuda" if torch.cuda.is_available() else "cpu")
-device = "cpu"
+
+print(f"Using {device}")
 
 superclasses = [
     ['BRCA', 'KICH', 'KIRC', 'LUAD', 'LUSC', 'MESO', 'SARC', 'UCEC'],

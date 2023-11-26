@@ -44,7 +44,7 @@ class FeatureSelection:
             for i, superclass in enumerate(self.superclasses):
                 data = np.asarray(subsets[i])
                 labels = np.asarray(super_labels[i])
-                # idx = fisher_score.fisher_score(data, labels, mode='rank')    # todo: da verificare
+                # idx = fisher_score.fisher_score(data, labels, mode='rank')
                 idx = fisher_score.fisher_score(data, labels, mode='index')
                 num_features = n_features
                 idx = idx[0:num_features]
