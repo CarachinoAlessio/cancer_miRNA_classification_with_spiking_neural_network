@@ -1,4 +1,6 @@
 torch==2.0.1
+nni==2.5
+filelock==3.10
 torchvision
 torchaudio
 snntorch==0.7.0
@@ -8,5 +10,4 @@ scikit-learn
 seaborn
 skfeature-chappers==1.1.0
 
-nni==2.5
-filelock==3.10
+

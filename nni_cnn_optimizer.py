@@ -7,6 +7,7 @@ from src.models.CNN import CNN
 from src.utils.dataloader import load_dataset
 
 device = ("cuda" if torch.cuda.is_available() else "cpu")
+device = "cpu"
 
 superclasses = [
     ['BRCA', 'KICH', 'KIRC', 'LUAD', 'LUSC', 'MESO', 'SARC', 'UCEC'],
@@ -58,7 +59,7 @@ def main_cnn_optimization(params, metalabel, labels_of_metaclass):
     dropout = [params['dropout_0'], params['dropout_1']]
     final_nf = params['nf4']
 
-    model = CNN(num_classes, filter_numbers, convolution_windows, max_pooling_windows, final_nf, dropout)#.to(device)
+    model = CNN(num_classes, filter_numbers, convolution_windows, max_pooling_windows, final_nf, dropout)
     model.to(device)
     epochs = 100  # TODO: be careful
     loss_fn = nn.CrossEntropyLoss()
