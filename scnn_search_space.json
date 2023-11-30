@@ -1,16 +1,17 @@
 {
-    "nf1": {"_type": "randint", "_value": [2, 256]},
-    "nf2": {"_type": "randint", "_value": [2, 256]},
-    "nf3": {"_type": "randint", "_value": [2, 256]},
-    "nf4": {"_type": "randint", "_value": [2, 256]},
-    "cw1": {"_type": "randint", "_value": [2, 7]}, 
+    "nf1": {"_type": "randint", "_value": [2, 7]},
+    "nf2": {"_type": "randint", "_value": [2, 100]},
+    "nf3": {"_type": "randint", "_value": [2, 100]},
+    "nf4": {"_type": "randint", "_value": [2, 100]},
+    "cw1": {"_type": "randint", "_value": [2, 7]},
     "cw2": {"_type": "randint", "_value": [2, 7]},
     "cw3": {"_type": "randint", "_value": [2, 7]},
     "pw1": {"_type": "randint", "_value": [2, 7]},
     "pw2": {"_type": "randint", "_value": [2, 7]},
     "pw3": {"_type": "randint", "_value": [2, 7]},
     "beta": {"_type": "uniform", "_value": [0.7, 1]},
-    "num_step": {"_type": "randint", "_value": [5, 50]}, 
+    "num_step": {"_type": "randint", "_value": [5, 50]},
+
     "batch_size": {"_type": "choice", "_value": [32, 64, 128]},
-    "lr": {"_type": "uniform", "_value": [0.0001, 0.1]}
+    "lr": {"_type": "quniform", "_value": [0.00001, 0.0025, 0.00001]}
 }

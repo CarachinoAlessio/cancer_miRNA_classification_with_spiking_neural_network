@@ -110,6 +110,8 @@ class CancerDataset(Dataset):
         label = self.dataset.iloc[idx, -1]
 
         data = torch.from_numpy(data).to(torch.float32)
+        #Data are (1, 300) tensor, make it (1,1,300)
+        data = torch.unsqueeze(data, 0)
         label = torch.tensor(self.label_map.index(label)).to(torch.int64)
 
         return (data, label)

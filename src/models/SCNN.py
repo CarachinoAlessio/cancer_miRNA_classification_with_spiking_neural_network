@@ -46,6 +46,7 @@ class SCNN(nn.Module):
     def forward(self, num_steps, data):
         mem_rec = []
         spk_rec = []
+        
         utils.reset(self.conv1d_1)  # resets hidden states for all LIF neurons in net
         utils.reset(self.conv1d_2)
         utils.reset(self.conv1d_3)

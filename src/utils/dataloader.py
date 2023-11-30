@@ -30,6 +30,10 @@ def load_dataset(name='', batch_size=128, shuffle_train=True, shuffle_test=False
 
         training_set = CancerDataset(os.path.join('data', 'features', f'reduced_data_metalabel{metalabel}_train.csv'), labels_of_metaclass)
         test_set = CancerDataset(os.path.join('data', 'features', f'reduced_data_metalabel{metalabel}_val.csv'), labels_of_metaclass)
+        
+        
+
+
 
         train_dataloader = torch.utils.data.DataLoader(
             training_set,
@@ -44,5 +48,6 @@ def load_dataset(name='', batch_size=128, shuffle_train=True, shuffle_test=False
             shuffle=shuffle_train,
             num_workers=1,
         )
+
 
         return train_dataloader, test_dataloader

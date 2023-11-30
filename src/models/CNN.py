@@ -46,7 +46,7 @@ class CNN(nn.Module):
         )
 
     def forward(self, x):
-        x = torch.unsqueeze(x, 1)
+        #x = torch.unsqueeze(x, 1) This is already done in the dataset [Check the data_loading_functions.py]
         out = self.conv1d_1(x)
         out = self.conv1d_2(out)
         out = self.conv1d_3(out)
