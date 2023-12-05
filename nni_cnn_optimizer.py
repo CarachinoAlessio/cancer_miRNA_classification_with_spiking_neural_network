@@ -102,7 +102,7 @@ def get_params():
 
 
 if __name__ == '__main__':
-    superclass_target = 0
+    superclass_target = 2
     metaclass_labels = superclasses[superclass_target]
     print(f'RUNNING EXPERIMENT FOR SUPERCLASS {superclass_target}')
 

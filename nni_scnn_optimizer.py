@@ -62,7 +62,7 @@ def test_accuracy(data_loader, net, num_steps, population_code=False, num_classe
       spk_rec, _ = net(data)
 
       if population_code:
-        acc += SF.accuracy_rate(spk_rec.unsqueeze(0), targets, population_code=True, num_classes=n_classes) * spk_rec.size(1)
+        acc += SF.accuracy_rate(spk_rec.unsqueeze(0), targets, population_code=True, num_classes=num_classes) * spk_rec.size(1)
       else:
         acc += SF.accuracy_rate(spk_rec.unsqueeze(0), targets) * spk_rec.size(1)
         
