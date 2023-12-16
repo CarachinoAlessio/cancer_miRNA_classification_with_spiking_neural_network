@@ -125,9 +125,9 @@ def train(dataloader, model, loss_fn, optimizer):
     model.train()
     for batch, (X, y) in enumerate(dataloader):
         X, y = X.to(DEVICE), y.to(DEVICE)
+        optimizer.zero_grad()
         pred = model(X)
         loss = loss_fn(pred, y)
-        optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
