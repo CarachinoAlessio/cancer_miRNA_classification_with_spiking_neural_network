@@ -242,4 +242,6 @@ if __name__ == '__main__':
             )
             df = df.append({'metalabel': metalabel, 'neurons_per_classes': neurons_per_classes, 'accuracy': acc}, ignore_index=True)
     
+    if not os.path.exists(os.path.join('data', 'results')):
+        os.makedirs(os.path.join('data', 'results'))
     df.to_csv(os.path.join('data', 'results', f'{model_name}_population_encoding.csv'), index=False)
