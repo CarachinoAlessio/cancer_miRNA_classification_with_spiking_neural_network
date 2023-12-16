@@ -228,6 +228,9 @@ if __name__ == '__main__':
 
     df = pd.DataFrame(columns=['metalabel', 'neurons_per_classes', 'accuracy'])
 
+    if not os.path.exists(os.path.join('data', 'results')):
+        os.makedirs(os.path.join('data', 'results'))
+    
     for neurons_per_classes in [25, 50, 100]:
         for metalabel in range(len(superclasses)):
             params = load_params(model_name, metalabel)
@@ -240,8 +243,6 @@ if __name__ == '__main__':
                 epochs=epochs,
                 neurons_per_classes=neurons_per_classes
             )
-            df = df.append({'metalabel': metalabel, 'neurons_per_classes': neurons_per_classes, 'accuracy': acc}, ignore_index=True)
-    
-    if not os.path.exists(os.path.join('data', 'results')):
-        os.makedirs(os.path.join('data', 'results'))
-    df.to_csv(os.path.join('data', 'results', f'{model_name}_population_encoding.csv'), index=False)
+            # df = df.append({'metalabel': metalabel, 'neurons_per_classes': neurons_per_classes, 'accuracy': acc}, ignore_index=True)
+            df.loc[len(df)] = [metalabel, neurons_per_classes, acc]
+    df.to_csv(os.path.join('data', 'results', f'{model_name}_population_encoding.csv'))
