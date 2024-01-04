@@ -216,7 +216,7 @@ def experiment(model_name: str, params: dict, metalabel: int, labels_of_metaclas
         os.makedirs(save_filepath)
 
     if mode == 'train':    
-        torch.save(model.state_dict(), os.path.join(save_filepath, f'{model_name}_class{metalabel}.pth'))
+        torch.save(model.state_dict(), os.path.join(save_filepath, f'{model_name}_class{metalabel}_neurons{neurons_per_classes}.pth'))
 
     return round(accuracy, 3)
     # Call the save_model function to save the model
