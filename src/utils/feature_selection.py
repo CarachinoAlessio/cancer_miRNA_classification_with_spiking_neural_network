@@ -98,7 +98,7 @@ if __name__ == '__main__':
     # Load data
     label_path = os.path.join("data", "MLinApp_course_data", "tcga_mir_label.csv")
     data_path = os.path.join("data", "MLinApp_course_data", "tcga_mir_rpm.csv")
-    miRNA_data, miRNA_labels, miRNA_tissues = load_data(data_path, label_path)
+    miRNA_labels, miRNA_data, miRNA_tissues = load_data(data_path, label_path)
 
     # Adjust data
     miRNA_data, miRNA_labels, miRNA_tissues, labels, dictionary, lab = class_balancing(miRNA_data, miRNA_labels,
