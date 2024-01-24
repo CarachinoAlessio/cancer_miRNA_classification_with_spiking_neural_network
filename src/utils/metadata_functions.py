@@ -155,6 +155,15 @@ def save_ovo_ovr(ovo, ovr, name=""):
         pkl.dump(ovr, f)
     print("Complete!")
 
+def load_ovo_ovr(name=""):
+    ovo = None
+    ovr = None
+    with open("src/models/metadata/ovo{}.pkl".format(name), "rb") as f:
+        ovo = pkl.load(f)
+    with open("src/models/metadata/ovr{}.pkl".format(name), "rb") as f:
+        ovr = pkl.load(f)
+    return ovo, ovr
+
 
 def save_metadata(metadata, split = "train", metalabel=None, train_data=None, name=""):
     print("Saving metadata...")

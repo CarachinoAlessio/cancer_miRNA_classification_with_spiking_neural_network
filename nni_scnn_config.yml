@@ -1,0 +1,15 @@
+experimentName: cancer_mirna_case
+trialConcurrency: 4
+maxExperimentDuration: 1h
+maxTrialNumber: 1000
+searchSpaceFile: scnn_search_space.json
+useAnnotation: false
+trialCommand: python nni_scnn_optimizer.py
+trialCodeDirectory: .
+trialGpuNumber: 0
+tuner:
+  name: Anneal
+  classArgs:
+    optimize_mode: maximize
+trainingService:
+  platform: local

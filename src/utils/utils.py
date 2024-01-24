@@ -93,6 +93,11 @@ def save_model(model, path, name):
     with open(path + name + '.pkl', 'wb') as fid:
         pkl.dump(model, fid)
 
+def load_model(path, name):
+    with open(path + name + '.pkl', 'rb') as fid:
+        model = pkl.load(fid)
+    return model
+
 def data_split_to_superclasses(data, superclasses):
     '''
     common function to split original data into supersets according to the superclasses

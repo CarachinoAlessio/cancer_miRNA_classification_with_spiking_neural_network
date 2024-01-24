@@ -8,8 +8,8 @@ __pycache__/
 
 
 # heavy files
-src/models/metadata_models/ovo_trained_1.pkl
-src/models/metadata_models/ovr_trained_1.pkl
+src/models/metadata/ovo_trained_1.pkl
+src/models/metadata/ovr_trained_1.pkl
 data/metadata/superclass_1_trainset.pkl
 
 # Distribution / packaging
