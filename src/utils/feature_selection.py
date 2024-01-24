@@ -59,7 +59,7 @@ class FeatureSelection:
                 df = pd.DataFrame(df_obj)
                 # f = open(os.path.join(self.save_path, 'selected_features.csv'))
                 df.to_csv(os.path.join(self.save_path, self.feature_file_name))
-                self.features = self.__load_features(feature_path=self.feature_file_name)
+                self.features = self.load_features()
             return selected_features
         else:
             raise Exception(f'{method} not implemented... yet.')
