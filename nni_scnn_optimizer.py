@@ -26,9 +26,9 @@ def train(dataloader, model, loss_fn, optimizer, num_steps):
     model.train()
     for batch, (X, y) in enumerate(dataloader):
         X, y = X.to(device), y.to(device)
+        optimizer.zero_grad()
         spk_rec, _ = model(num_steps, X)
         loss_val = loss_fn(spk_rec, y)
-        optimizer.zero_grad()
         loss_val.backward()
         optimizer.step()
 

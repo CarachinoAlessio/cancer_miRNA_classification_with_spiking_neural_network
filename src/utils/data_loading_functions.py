@@ -93,13 +93,14 @@ def split_data(miRna_data, miRna_label):
 
 
 class CancerDataset(Dataset):
-    def __init__(self, csv_file: str, labels_of_metaclass: List[str]):
+    def __init__(self, csv_file: str, labels_of_metaclass: List[str], data=None):
         """
         Arguments:
             csv_file (string): Path to the csv file with annotations.
             labels_of_metaclass (list[str]): List of labels representing the metaclass
         """
-        self.dataset = pd.read_csv(csv_file)
+        
+        self.dataset = pd.read_csv(csv_file) if data is None else data
         self.label_map = labels_of_metaclass
 
     def __len__(self):
